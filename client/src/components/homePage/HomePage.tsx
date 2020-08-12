@@ -1,40 +1,46 @@
 import React, { Component } from "react";
 import ProductsList from "../products/Products";
-import { getCartContent } from "../../services/CartServices";
+import { getProductsService } from "../../services/ProductsServices";
 import "./HomePage.module.scss";
+
+interface ProductObject {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+}
 
 interface Props {}
 
 interface State {
-  cartContent: string;
+  productsList: ProductObject[];
 }
 
 class HomePage extends Component<Props, State> {
   state: State = {
-    cartContent: "",
+    productsList: [],
   };
 
   componentDidMount = () => {
-    this.updateCartContent();
+    this.fetchProducts();
   };
 
-  updateCartContent = () => {
-    getCartContent()
+  fetchProducts = () => {
+    getProductsService()
       .then((data) => {
         this.setState({
-          cartContent: data,
+          productsList: data,
         });
       })
       .catch((error) => {});
   };
 
   render() {
-    const { cartContent } = this.state;
+    const { productsList } = this.state;
     return (
       <>
         <div className="jumbotron">
-          <ProductsList />
-          <p>{cartContent}</p>
+          <ProductsList products={productsList} />
         </div>
       </>
     );

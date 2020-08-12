@@ -6,33 +6,19 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-// import dressImage from "../../resources/dress.jpg";
-
-interface ProductsListProps {}
 
 interface ProductObject {
+  id: number;
   name: string;
+  price: string;
   image: string;
 }
 
-interface ProductsListState {
-  products: ProductObject[];
+interface Props {
+  products: ProductObject[]
 }
 
-class ProductsList extends Component<ProductsListProps, ProductsListState> {
-  state: ProductsListState = {
-    products: [
-      { name: "Shoes", image: "shoes.jpg" },
-      { name: "Bag", image: "bag.jpg" },
-      { name: "Laptop", image: "laptop.jpg" },
-      { name: "Headphones", image: "headphones.jpg" },
-      { name: "Dress", image: "dress.jpg" },
-      { name: "Sunglasses", image: "sunglasses.jpg" },
-      { name: "Chair", image: "chair.jpg" },
-      { name: "Table", image: "table.jpg" },
-    ],
-  };
-
+class ProductsList extends Component<Props> {
   renderProduct = (productObj: ProductObject) => {
     return (
       <div>
@@ -58,7 +44,7 @@ class ProductsList extends Component<ProductsListProps, ProductsListState> {
   };
 
   render() {
-    const { products } = this.state;
+    const { products } = this.props;
     return (
       <div>
         {products.length > 0 ? (
@@ -66,7 +52,7 @@ class ProductsList extends Component<ProductsListProps, ProductsListState> {
             <h3>Our Products</h3>
             <Grid container spacing={7} style={{ padding: 20 }}>
               {products.map((product) => (
-                <Grid item xs={12} sm={6} lg={4} xl={3}>
+                <Grid key={product.id} item xs={12} sm={6} lg={4} xl={3}>
                   {this.renderProduct(product)}
                 </Grid>
               ))}
