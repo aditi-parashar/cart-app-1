@@ -41,15 +41,15 @@ export const updateCartService = async (productDetails: any) => {
     });
 };
 
-export const deleteFromCartService = async (productId: number) => {
+export const deleteFromCartService = async (itemId: number) => {
   return axios
-    .delete(`${API_URL}/cart/${productId}`, {
+    .delete(`${API_URL}/cart/${itemId}`, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
     })
     .then((response) => {
-      return response.data;
+      return response;
     });
 };

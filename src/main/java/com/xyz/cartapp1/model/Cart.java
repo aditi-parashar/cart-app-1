@@ -6,11 +6,11 @@ import java.util.List;
 @Entity(name="cart")
 public class Cart {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="item_id")
     private int itemId;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false)
     @JoinColumn(name = "product_id", referencedColumnName = "id", unique = true, nullable = false)
     private Product product;
 

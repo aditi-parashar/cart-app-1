@@ -11,13 +11,12 @@ interface ProductObject {
 
 interface Props {
   products: ProductObject[];
+  onAddToCart: (product: ProductObject, quantity: number) => void;
 }
 
 class ProductsList extends Component<Props> {
-  handleAddToCartClick = (product: ProductObject, quantity: number) => {};
-
   render() {
-    const { products } = this.props;
+    const { products, onAddToCart } = this.props;
     return (
       <div>
         {products.length > 0 ? (
@@ -26,10 +25,7 @@ class ProductsList extends Component<Props> {
             <Grid container spacing={7} style={{ padding: 20 }}>
               {products.map((product) => (
                 <Grid key={product.id} item xs={12} sm={6} lg={4} xl={3}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={this.handleAddToCartClick}
-                  />
+                  <ProductCard product={product} onAddToCart={onAddToCart} />
                 </Grid>
               ))}
             </Grid>

@@ -26,5 +26,5 @@ CREATE TABLE cart (
 );
 
 INSERT INTO cart (product_id, quantity) VALUES
-  (1, 2),
-  (5, 1);
+  (1, 1),
+  (5, 2);
