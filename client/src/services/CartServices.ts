@@ -2,6 +2,9 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+/**
+ * API Service to get all cart items
+ */
 export const getCartContentService = async () => {
   return axios
     .get(`${API_URL}/cart`, {
@@ -15,6 +18,9 @@ export const getCartContentService = async () => {
     });
 };
 
+/**
+ * API Service to add a new item(product) to the cart
+ */
 export const addToCartService = async (productDetails: any) => {
   return axios
     .post(`${API_URL}/cart`, productDetails, {
@@ -28,6 +34,9 @@ export const addToCartService = async (productDetails: any) => {
     });
 };
 
+/**
+ * API Service to update an existing item(product) to the cart
+ */
 export const updateCartService = async (productDetails: any) => {
   return axios
     .put(`${API_URL}/cart`, productDetails, {
@@ -41,6 +50,9 @@ export const updateCartService = async (productDetails: any) => {
     });
 };
 
+/**
+ * API Service to delete an item(product) from the cart
+ */
 export const deleteFromCartService = async (itemId: number) => {
   return axios
     .delete(`${API_URL}/cart/${itemId}`, {

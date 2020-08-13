@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import ProductCard from "./ProductCard";
 
+/* Interface for a Product Type Object */
 interface ProductObject {
   id: number;
   name: string;
@@ -9,6 +10,7 @@ interface ProductObject {
   image: string;
 }
 
+/* Interface for Props for class ProductsList */
 interface Props {
   products: ProductObject[];
   onAddToCart: (product: ProductObject, quantity: number) => void;
@@ -21,7 +23,7 @@ class ProductsList extends Component<Props> {
       <div>
         {products.length > 0 ? (
           <div>
-            <h3>Our Products</h3>
+            <h4>Our Products</h4>
             <Grid container spacing={7} style={{ padding: 20 }}>
               {products.map((product) => (
                 <Grid key={product.id} item xs={12} sm={6} lg={4} xl={3}>

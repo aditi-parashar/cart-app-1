@@ -7,6 +7,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Typography from "@material-ui/core/Typography";
 import NoProductImage from "../../resources/NoProductImage.jpg";
 
+/* Interface for a Product Type Object */
 interface ProductObject {
   id: number;
   name: string;
@@ -14,6 +15,7 @@ interface ProductObject {
   image: string;
 }
 
+/* Interface for Props for ProductCard component */
 interface Props {
   product: ProductObject;
   onAddToCart: (product: ProductObject, quantity: number) => void;
@@ -22,20 +24,29 @@ interface Props {
 const ProductCard = (props: Props) => {
   const { product, onAddToCart } = props;
   const [quantity, setQuantity] = useState(1);
-  let imgSrc = "";
 
+  let imgSrc = "";
   try {
+    /* Try loading the product image from the resources using the image name fetched from server */
     imgSrc = require(`../../resources/${product.image}`);
   } catch (e) {
+    /* If there's an error loading image, use a dummy No Image */
     imgSrc = NoProductImage;
   }
 
+  /**
+   * This function decrements the quantity counter state
+   */
   const decrementQuantity = () => {
+    /* Minimum quantity is 1 */
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
 
+  /**
+   * This function increments the quantity counter state
+   */
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
   };
