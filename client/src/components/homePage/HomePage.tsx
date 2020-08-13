@@ -190,6 +190,38 @@ class HomePage extends Component<Props, State> {
       .catch((error) => {});
   };
 
+  /**
+   * This function handles all 'Decrement Quantity by 1' requests from the Cart item actions.
+   * @param {object} item is the the item which needs to be updated in the cart.
+   */
+  handleDecrement = (item: CartItemObject) => {
+    /* Update the quantity in the new data */
+    const updatedCartItem = {
+      itemId: item.itemId,
+      product: item.product,
+      quantity: item.quantity - 1,
+    };
+
+    /* Update the cart to reflect the new quantity in an existing item */
+    this.updateCart(updatedCartItem);
+  };
+
+  /**
+   * This function handles all 'Increment Quantity by 1' requests from the Cart item actions.
+   * @param {object} item is the the item which needs to be updated in the cart.
+   */
+  handleIncrement = (item: CartItemObject) => {
+    /* Update the quantity in the new data */
+    const updatedCartItem = {
+      itemId: item.itemId,
+      product: item.product,
+      quantity: item.quantity + 1,
+    };
+
+    /* Update the cart to reflect the new quantity in an existing item */
+    this.updateCart(updatedCartItem);
+  };
+
   render() {
     const { cartContent, productsList, addToCartInProgress } = this.state;
     return (
@@ -198,6 +230,8 @@ class HomePage extends Component<Props, State> {
           <Cart
             cartContent={cartContent}
             onRemoveClick={this.handleDeleteFromCart}
+            onDecrementClick={this.handleDecrement}
+            onIncrementClick={this.handleIncrement}
           />
         </div>
         <div className="jumbotron">
