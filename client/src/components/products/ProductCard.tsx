@@ -19,10 +19,11 @@ interface ProductObject {
 interface Props {
   product: ProductObject;
   onAddToCart: (product: ProductObject, quantity: number) => void;
+  addToCartDisabled: boolean;
 }
 
 const ProductCard = (props: Props) => {
-  const { product, onAddToCart } = props;
+  const { product, onAddToCart, addToCartDisabled } = props;
   const [quantity, setQuantity] = useState(1);
 
   let imgSrc = "";
@@ -74,6 +75,7 @@ const ProductCard = (props: Props) => {
             <Button onClick={incrementQuantity}> + </Button>
           </ButtonGroup>
           <Button
+            disabled={addToCartDisabled}
             style={{ float: "right" }}
             size="small"
             color="primary"

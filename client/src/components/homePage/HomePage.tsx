@@ -31,12 +31,14 @@ interface Props {}
 interface State {
   cartContent: CartItemObject[];
   productsList: ProductObject[];
+  addToCartInProgress: boolean;
 }
 
 class HomePage extends Component<Props, State> {
   state: State = {
     cartContent: [],
     productsList: [],
+    addToCartInProgress: false,
   };
 
   /* Fetch cart items and products from server upon mounting */
@@ -79,6 +81,12 @@ class HomePage extends Component<Props, State> {
    * @param {object} newCartItem is the new item which needs to be added in the cart.
    */
   addToCart = (newCartItem: CartItemObject) => {
+    /* Set the 'addToCartInProgress' flag to true for the PUT request */
+    /* To disable the Add to Cart button till the PUT request is resolved */
+    /* This is to avoid multiple PUT requests going to the backed for the same item. */
+    this.setState({
+      addToCartInProgress: true,
+    });
     addToCartService(newCartItem)
       .then((data) => {
         const { cartContent } = this.state;
@@ -86,9 +94,14 @@ class HomePage extends Component<Props, State> {
         newCartContent.push(data);
         this.setState({
           cartContent: newCartContent,
+          addToCartInProgress: false,
         });
       })
-      .catch((error) => {});
+      .catch((error) => {
+        this.setState({
+          addToCartInProgress: false,
+        });
+      });
   };
 
   /**
@@ -178,7 +191,7 @@ class HomePage extends Component<Props, State> {
   };
 
   render() {
-    const { cartContent, productsList } = this.state;
+    const { cartContent, productsList, addToCartInProgress } = this.state;
     return (
       <>
         <div className="jumbotron">
@@ -191,6 +204,7 @@ class HomePage extends Component<Props, State> {
           <ProductsList
             products={productsList}
             onAddToCart={this.handleAddToCartClick}
+            addToCartDisabled={addToCartInProgress}
           />
         </div>
       </>
