@@ -13,13 +13,13 @@ import Paper from "@material-ui/core/Paper";
 interface ProductObject {
   id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
 }
 
 /* Interface for a Cart Item Type Object */
 interface CartItemObject {
-  itemId: number;
+  itemId: any;
   product: ProductObject;
   quantity: number;
 }
@@ -36,16 +36,14 @@ interface Props {
 interface State {}
 
 class Cart extends Component<Props, State> {
+  /**
+   * This function calculates the price grand total of all cart items
+   */
   calculateSubTotal = () => {
     const { cartContent } = this.props;
     let grandTotal = 0;
     for (let item of cartContent) {
-      const price = parseFloat(item.product.price);
-      let finalPrice = 0;
-      if (!isNaN(price)) {
-        finalPrice = price * item.quantity;
-      }
-      grandTotal += finalPrice;
+      grandTotal += item.product.price * item.quantity;
     }
     return grandTotal;
   };
@@ -88,13 +86,7 @@ class Cart extends Component<Props, State> {
                 </TableHead>
                 <TableBody>
                   {cartContent.map((item, index) => {
-                    const price = parseFloat(item.product.price);
-                    let pricePerItem = "Error loading price";
-                    let finalPrice = 0;
-                    if (!isNaN(price)) {
-                      pricePerItem = price.toString();
-                      finalPrice = price * item.quantity;
-                    }
+                    const finalPrice = item.product.price * item.quantity;
                     return (
                       <TableRow key={index}>
                         <TableCell component="th" scope="row">
@@ -138,7 +130,9 @@ class Cart extends Component<Props, State> {
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell align="right">{pricePerItem}</TableCell>
+                        <TableCell align="right">
+                          {item.product.price}
+                        </TableCell>
                         <TableCell align="right">{finalPrice}</TableCell>
                         <TableCell style={{ color: "#f15a4f" }} align="center">
                           <Button

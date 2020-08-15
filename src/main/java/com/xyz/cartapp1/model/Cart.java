@@ -41,6 +41,12 @@ public class Cart {
         this.quantity = quantity;
     }
 
+    public Cart(int itemId, Product product, long quantity) {
+        this.itemId = itemId;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     protected Cart() {
     }
 }

@@ -11,7 +11,7 @@ import {
 
 /* Interface for a Cart Item Type Object */
 interface CartItemObject {
-  itemId: number;
+  itemId: any;
   product: ProductObject;
   quantity: number;
 }
@@ -20,7 +20,7 @@ interface CartItemObject {
 interface ProductObject {
   id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
 }
 
@@ -157,7 +157,7 @@ class HomePage extends Component<Props, State> {
     } else {
       /* If the product is not found in the cart */
       const newCartItem = {
-        itemId: cartContent.length + 1,
+        itemId: null,
         product,
         quantity,
       };

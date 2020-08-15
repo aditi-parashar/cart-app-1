@@ -1,0 +1,156 @@
+package com.xyz.cartapp1;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xyz.cartapp1.controller.CartController;
+import com.xyz.cartapp1.model.Cart;
+import com.xyz.cartapp1.model.Product;
+import org.aspectj.lang.annotation.Before;
+import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.MOCK, classes={ CartApp1Application.class })
+@AutoConfigureMockMvc
+public class CartControllerTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    private CartController cartControllerMock;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    private static Product productItem1;
+    private static Product productItem2;
+    private static Product productItem3;
+    private static Cart cartItem1;
+    private static Cart cartItem2;
+
+    @Before("")
+    public void setUp() {
+        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+        productItem1 = new Product(1, "Shoes", 1000.00, "shoes.jpg");
+        productItem2 = new Product(2, "Bag", 2500.00, "bag.jpg");
+        productItem3 = new Product(3, "Laptop", 80000.00, "bag.jpg");
+        cartItem1 = new Cart(1, productItem1, 2);
+        cartItem2 = new Cart(2, productItem2, 5);
+    }
+
+    @Test
+    public void should_LoadControllerContext() throws Exception {
+        assertThat(cartControllerMock).isNotNull();
+    }
+
+    @Test
+    public void should_ReturnCartItems_When_ValidGetRequest() throws Exception {
+        mockMvc.perform(get("/api/cart")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    public void should_ReturnCreatedStatus_When_ValidPostRequest() throws Exception {
+        mockMvc.perform(post("/api/cart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content((asJsonString(new Cart(3, productItem3, 4)))))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void should_ThrowException_When_ItemIdIsLessThan1_Post() throws Exception {
+        when(cartControllerMock.addToCart(new Cart(0, productItem3, 6)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test()
+    public void should_ThrowException_When_ProductIsNull_Post() throws Exception {
+        when(cartControllerMock.addToCart(new Cart(3, null, 2)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ThrowException_When_QuantityIsZero_Post() throws Exception {
+        when(cartControllerMock.addToCart(new Cart(3, productItem3, 0)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ThrowException_When_QuantityIsLessThanZero_Post() throws Exception {
+        when(cartControllerMock.addToCart(new Cart(3, productItem3, -1)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ReturnOkStatus_When_ValidPutRequest() throws Exception {
+        mockMvc.perform(put("/api/cart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content((asJsonString(new Cart(2, productItem2, 4)))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_ThrowException_When_ItemIdIsLessThan1_Put() throws Exception {
+        when(cartControllerMock.updateCart(new Cart(0, productItem2, 6)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test()
+    public void should_ThrowException_When_ProductIsNull_Put() throws Exception {
+        when(cartControllerMock.updateCart(new Cart(2, null, 2)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ThrowException_When_QuantityIsZero_Put() throws Exception {
+        when(cartControllerMock.updateCart(new Cart(2, productItem2, 0)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ThrowException_When_QuantityIsLessThanZero_Put() throws Exception {
+        when(cartControllerMock.updateCart(new Cart(2, productItem2, -1)))
+                .thenThrow(ResponseStatusException.class);
+    }
+
+    @Test
+    public void should_ReturnOkStatus_When_ValidDeleteRequest() throws Exception {
+        mockMvc.perform(delete("/api/cart/{id}", 1))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_ThrowException_When_IdIsNotInt() throws Exception {
+        mockMvc.perform(delete("/api/cart/{id}", "abc"))
+                .andExpect(status().isBadRequest());
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

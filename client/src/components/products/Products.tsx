@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
 interface ProductObject {
   id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
 }
 
