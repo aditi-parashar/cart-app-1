@@ -1,5 +1,9 @@
 package com.xyz.cartapp1.model;
 
+/**
+ * Represents a Product.
+ */
+
 import javax.persistence.*;
 
 @Entity(name="products")

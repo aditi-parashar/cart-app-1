@@ -1,7 +1,10 @@
 package com.xyz.cartapp1.model;
 
+/**
+ * Represents a Cart Item.
+ */
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity(name="cart")
 public class Cart {

@@ -5,9 +5,7 @@ import com.xyz.cartapp1.controller.CartController;
 import com.xyz.cartapp1.model.Cart;
 import com.xyz.cartapp1.model.Product;
 import org.aspectj.lang.annotation.Before;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,12 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.MOCK, classes={ CartApp1Application.class })
 @AutoConfigureMockMvc
@@ -35,9 +32,6 @@ public class CartControllerTests {
 
     @MockBean
     private CartController cartControllerMock;
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     private static Product productItem1;
     private static Product productItem2;
@@ -55,19 +49,29 @@ public class CartControllerTests {
         cartItem2 = new Cart(2, productItem2, 5);
     }
 
+    /**
+     * This test asserts that the cart controller context should not be null.
+     */
     @Test
     public void should_LoadControllerContext() throws Exception {
         assertThat(cartControllerMock).isNotNull();
     }
 
+    /**
+     * This test expects that a valid GET request to cart controller should return Ok status
+     */
     @Test
-    public void should_ReturnCartItems_When_ValidGetRequest() throws Exception {
+    public void should_ReturnOkStatus_When_ValidGetRequest() throws Exception {
         mockMvc.perform(get("/api/cart")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
+    /**
+     * This test expects that a valid POST request to cart controller should have a Cart item as json
+     * and should return created status
+     */
     @Test
     public void should_ReturnCreatedStatus_When_ValidPostRequest() throws Exception {
         mockMvc.perform(post("/api/cart")
@@ -77,30 +81,50 @@ public class CartControllerTests {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * This test expects that an invalid input in POST request (item id less than 1) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_ItemIdIsLessThan1_Post() throws Exception {
         when(cartControllerMock.addToCart(new Cart(0, productItem3, 6)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in POST request (product is null) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test()
     public void should_ThrowException_When_ProductIsNull_Post() throws Exception {
         when(cartControllerMock.addToCart(new Cart(3, null, 2)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in POST request (quantity is 0) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_QuantityIsZero_Post() throws Exception {
         when(cartControllerMock.addToCart(new Cart(3, productItem3, 0)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in POST request (quantity is negative) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_QuantityIsLessThanZero_Post() throws Exception {
         when(cartControllerMock.addToCart(new Cart(3, productItem3, -1)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that a valid PUT request to cart controller should have a Cart item as json
+     * and should return Ok status
+     */
     @Test
     public void should_ReturnOkStatus_When_ValidPutRequest() throws Exception {
         mockMvc.perform(put("/api/cart")
@@ -110,42 +134,68 @@ public class CartControllerTests {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * This test expects that an invalid input in PUT request (item id less than 1) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_ItemIdIsLessThan1_Put() throws Exception {
         when(cartControllerMock.updateCart(new Cart(0, productItem2, 6)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in PUT request (product is null) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test()
     public void should_ThrowException_When_ProductIsNull_Put() throws Exception {
         when(cartControllerMock.updateCart(new Cart(2, null, 2)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in PUT request (quantity is 0) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_QuantityIsZero_Put() throws Exception {
         when(cartControllerMock.updateCart(new Cart(2, productItem2, 0)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that an invalid input in PUT request (quantity is negative) to cart controller
+     * should throw ResponseStatusException exception.
+     */
     @Test
     public void should_ThrowException_When_QuantityIsLessThanZero_Put() throws Exception {
         when(cartControllerMock.updateCart(new Cart(2, productItem2, -1)))
                 .thenThrow(ResponseStatusException.class);
     }
 
+    /**
+     * This test expects that a valid DELETE request to cart controller should return Ok status
+     */
     @Test
     public void should_ReturnOkStatus_When_ValidDeleteRequest() throws Exception {
         mockMvc.perform(delete("/api/cart/{id}", 1))
                 .andExpect(status().isOk());
     }
 
+    /**
+     * This test expects that an invalid input in DELETE request (Id is not integer) to cart controller
+     * should return Bad request status
+     */
     @Test
     public void should_ThrowException_When_IdIsNotInt() throws Exception {
         mockMvc.perform(delete("/api/cart/{id}", "abc"))
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * This method converts an object into a JSON String
+     */
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

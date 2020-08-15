@@ -26,20 +26,33 @@ public class CartController {
     @Autowired
     private CartRepository cartRepository;
 
+    /**
+     * This method is the end point for cart items GET request.
+     * @return List<Cart> This returns list of Cart items.
+     */
     @GetMapping
     public List<Cart> getCartContent() {
         return cartRepository.findAll();
     }
 
+    /**
+     * This method is the end point for cart items POST request.
+     * @param cart The item that needs to be added into cart.
+     * @exception ResponseStatusException On invalid input error.
+     * @return Cart This returns the newly added item into the cart.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cart addToCart(@RequestBody final Cart cart ) {
         try {
+            /* If the Item Id in the request body is not null and has a value */
             if ( cart.getItemId() > 0 ) {
                 List<Cart> cartItems = cartRepository.findAll();
                 if (cartItems.size() != 0) {
                     for (Cart item : cartItems) {
+                        /* Check if the Item Id already exists */
                         if ( item.getItemId() == cart.getItemId() ) {
+                            /* If the Item Id exists in the cart, then POST is not allowed. */
                             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Item already exists in Cart.");
                         }
                     }
@@ -59,11 +72,18 @@ public class CartController {
         }
     }
 
+    /**
+     * This method is the end point for cart items PUT request.
+     * @param cart The item that needs to be updated in the cart.
+     * @exception ResponseStatusException On invalid input error.
+     * @return Cart This returns the updated item in the cart.
+     */
     @PutMapping
     @Validated
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Cart updateCart(@Validated @RequestBody final Cart cart) {
         try {
+            /* Get the item from the cart table using the received id, update its quantity and persist */
             Cart existingCartItem = cartRepository.getOne(cart.getItemId());
             existingCartItem.setQuantity(cart.getQuantity());
             return cartRepository.saveAndFlush(existingCartItem);
@@ -82,6 +102,12 @@ public class CartController {
         }
     }
 
+    /**
+     * This method is the end point for cart items DELETE request.
+     * @param id The item id that needs to be deleted from the cart.
+     * @exception ResponseStatusException On invalid input error.
+     * @return void This doesn't return anything.
+     */
     @DeleteMapping("/{id}")
     public void deleteFromCart(@PathVariable int id) {
         try {

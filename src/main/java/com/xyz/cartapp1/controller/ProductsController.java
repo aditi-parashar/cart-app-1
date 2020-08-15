@@ -17,6 +17,10 @@ public class ProductsController {
     @Autowired
     ProductsRepository productsRepository;
 
+    /**
+     * This method is the end point for products list GET request.
+     * @return List<Product> This returns list of all Products.
+     */
     @GetMapping
     public List<Product> getProducts() {
         return productsRepository.findAll();
