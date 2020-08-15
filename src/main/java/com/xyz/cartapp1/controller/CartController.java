@@ -35,6 +35,17 @@ public class CartController {
     @ResponseStatus(HttpStatus.CREATED)
     public Cart addToCart(@RequestBody final Cart cart ) {
         try {
+            if ( cart.getItemId() > 0 ) {
+                List<Cart> cartItems = cartRepository.findAll();
+                if (cartItems.size() != 0) {
+                    for (Cart item : cartItems) {
+                        if ( item.getItemId() == cart.getItemId() ) {
+                            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Item already exists in Cart.");
+                        }
+                    }
+                }
+            }
+
             Cart returnCartItem =  cartRepository.saveAndFlush(cart);
             return returnCartItem;
         } catch(DataIntegrityViolationException e) {
